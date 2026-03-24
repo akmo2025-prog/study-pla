@@ -47,6 +47,27 @@ export default function TasksPage() {
     fetchTasks();
   }, []);
 
+  const handleDelete = async (e: React.MouseEvent, id: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!confirm('Are you sure you want to delete this task?')) return;
+    
+    try {
+      const response = await fetch(`/api/tasks/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (response.ok) {
+        setTasks((prev) => prev.filter((task) => task.id !== id));
+      } else {
+        console.error('Failed to delete task');
+      }
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 p-6 sm:p-12 font-sans selection:bg-indigo-500/30 relative overflow-hidden">
       
@@ -112,8 +133,19 @@ export default function TasksPage() {
                     : 'border-zinc-200/80 bg-white/80 backdrop-blur-sm hover:border-indigo-500/30 dark:border-zinc-800/80 dark:bg-zinc-900/50 dark:hover:border-indigo-400/30'
                   }`}
               >
+                <button
+                  onClick={(e) => handleDelete(e, task.id)}
+                  className="absolute top-4 right-4 z-10 p-2 rounded-full text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 dark:bg-zinc-900/40 bg-white/40 backdrop-blur-md"
+                  aria-label="Delete Task"
+                  title="Delete Task"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+
                 <div className="space-y-4">
-                  <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start justify-between gap-3 pr-10">
                     <div className="flex flex-wrap gap-2">
                       {/* Subject Badge */}
                       <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold tracking-wide ${task.completed

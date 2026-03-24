@@ -23,14 +23,6 @@
       "subject": "History",
       "priority": "low",
       "completed": false
-    },
-    {
-      "title": "Falafel",
-      "dueDate": "2026-03-11",
-      "subject": "Global exam",
-      "priority": "high",
-      "completed": false,
-      "id": 4
     }
   ]
 }
