@@ -14,29 +14,28 @@ export default function NewTaskPage() {
     priority: 'medium',
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('/api/tasks', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          completed: false, // Default newly created tasks to not completed
-        }),
-      });
-
-      if (response.ok) {
-        // Redirect back to the task list view upon successful creation
-        router.push('/tasks');
-        router.refresh();
-      } else {
-        console.error('Failed to create task');
-      }
+      // Fetch existing from array in LocalStorage
+      const stored = localStorage.getItem('study_tasks');
+      const currentTasks = stored ? JSON.parse(stored) : [];
+      
+      const newId = currentTasks.length > 0 ? Math.max(...currentTasks.map((t: any) => t.id)) + 1 : 1;
+      
+      const newTask = {
+        ...formData,
+        id: newId,
+        completed: false
+      };
+      
+      currentTasks.push(newTask);
+      localStorage.setItem('study_tasks', JSON.stringify(currentTasks));
+      
+      // Redirect back to the task list view upon successful creation
+      router.push('/tasks');
     } catch (error) {
       console.error('An error occurred while creating the task', error);
     } finally {

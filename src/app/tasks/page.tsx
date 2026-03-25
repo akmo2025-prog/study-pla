@@ -32,37 +32,41 @@ export default function TasksPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchTasks() {
+    function loadTasks() {
       try {
-        const response = await fetch('/api/tasks');
-        const data = await response.json();
-        setTasks(data);
+        const stored = localStorage.getItem('study_tasks');
+        if (stored) {
+          setTasks(JSON.parse(stored));
+        } else {
+          // Default Sample Tasks
+          const defaults = [
+            { id: 1, title: "Study for math exam", dueDate: "2026-03-20", subject: "Mathematics", priority: "high", completed: false },
+            { id: 2, title: "Read chapter 5", dueDate: "2026-03-18", subject: "Literature", priority: "medium", completed: true },
+            { id: 3, title: "Prepare presentation slides", dueDate: "2026-03-22", subject: "History", priority: "low", completed: false }
+          ];
+          localStorage.setItem('study_tasks', JSON.stringify(defaults));
+          setTasks(defaults);
+        }
       } catch (error) {
-        console.error('Failed to fetch tasks:', error);
+        console.error('Failed to load tasks from localStorage', error);
       } finally {
         setIsLoading(false);
       }
     }
 
-    fetchTasks();
+    loadTasks();
   }, []);
 
-  const handleDelete = async (e: React.MouseEvent, id: number) => {
+  const handleDelete = (e: React.MouseEvent, id: number) => {
     e.preventDefault();
     e.stopPropagation();
     
     if (!confirm('Are you sure you want to delete this task?')) return;
     
     try {
-      const response = await fetch(`/api/tasks/${id}`, {
-        method: 'DELETE',
-      });
-      
-      if (response.ok) {
-        setTasks((prev) => prev.filter((task) => task.id !== id));
-      } else {
-        console.error('Failed to delete task');
-      }
+      const updatedTasks = tasks.filter((task) => task.id !== id);
+      setTasks(updatedTasks);
+      localStorage.setItem('study_tasks', JSON.stringify(updatedTasks));
     } catch (error) {
       console.error('Error deleting task:', error);
     }
