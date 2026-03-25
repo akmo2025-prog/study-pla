@@ -48,6 +48,9 @@ export default function RootLayout({
                   <Link href="/tasks" className="text-zinc-600 transition-colors hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400">
                     Tasks
                   </Link>
+                  <Link href="/calendar" className="text-zinc-600 transition-colors hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400">
+                    Calendar
+                  </Link>
                   <Link href="/tasks/new" className="text-zinc-600 transition-colors hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400">
                     New Task
                   </Link>
