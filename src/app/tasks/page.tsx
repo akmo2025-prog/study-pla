@@ -72,6 +72,18 @@ export default function TasksPage() {
     }
   };
 
+  const handleToggleStatus = (e: React.MouseEvent, id: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const updatedTasks = tasks.map(task => 
+      task.id === id ? { ...task, completed: !task.completed } : task
+    );
+    
+    setTasks(updatedTasks);
+    localStorage.setItem('study_tasks', JSON.stringify(updatedTasks));
+  };
+
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 p-6 sm:p-12 font-sans selection:bg-indigo-500/30 relative overflow-hidden">
       
@@ -168,16 +180,20 @@ export default function TasksPage() {
                     </div>
 
                     {/* Status Indicator */}
-                    <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border transition-colors mt-0.5 ${task.completed
+                    <button 
+                      onClick={(e) => handleToggleStatus(e, task.id)}
+                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border transition-all mt-0.5 cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500/50 ${task.completed
                         ? 'border-emerald-500 bg-emerald-500 text-white shadow-sm shadow-emerald-500/30 dark:border-emerald-400 dark:bg-emerald-400 dark:text-zinc-950'
-                        : 'border-zinc-300 text-transparent dark:border-zinc-600 group-hover:border-indigo-300 dark:group-hover:border-indigo-500/50'
-                      }`}>
+                        : 'border-zinc-300 text-transparent dark:border-zinc-600 hover:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10'
+                      }`}
+                      aria-label={task.completed ? "Mark as incomplete" : "Mark as complete"}
+                    >
                       {task.completed && (
                         <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                         </svg>
                       )}
-                    </div>
+                    </button>
                   </div>
 
                   <div>
